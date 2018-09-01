@@ -1,0 +1,2 @@
+# SSMPermissionManagementSystem
+基于Java SSM框架开发的权限管理系统
