@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <!-- 基本设置，可以查看mybatis的configure类 -->
+    <settings>
+        <setting name="safeRowBoundsEnabled" value="true"/>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+
+    <!--&lt;!&ndash; sql里使用的类可以用这个起一个别名 &ndash;&gt;-->
+    <!--<typeAliases>-->
+        <!--&lt;!&ndash;<typeAlias type="com.xxx" alias="bb"/>&ndash;&gt;-->
+    <!--</typeAliases>-->
+
+    <!--sql监听 类似拦截器-->
+    <!--<plugins>-->
+        <!--<plugin interceptor=""></plugin>-->
+    <!--</plugins>-->
+
+    <!-- 处理一些无法映射的情况 例如枚举 -->
+    <!--<typeHandlers>-->
+        <!--<typeHandler handler=""-->
+    <!--</typeHandlers>-->
+</configuration>
