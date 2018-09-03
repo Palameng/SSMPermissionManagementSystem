@@ -150,7 +150,7 @@
         select
         <include refid="Base_Column_List"/>
         from sys_dept
-        where level like #{level} || '.%'
+        where level like #{level}
     </select>
     
     <update id="batchUpdateLevel" parameterType="map">
@@ -162,10 +162,12 @@
     </update>
 
     <select id="countByNameAndParentId" parameterType="map" resultType="int">
-        select count (1)
+        select count(1)
         from sys_dept
-        where parent_id = #{parentId}
-        and name = #{name}
+        where name = #{name}
+        <if test="parentId != null">
+            and parent_id = #{parentId}
+        </if>
         <if test="id != null">
             and id != #{id}
         </if>

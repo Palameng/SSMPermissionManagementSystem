@@ -124,7 +124,7 @@ public class SysDeptService {
         // 判断新旧level是否相等，不相等则把旧level下的所有子部门规划到新level下
         if (!after.getLevel().equals(before.getLevel())) {
             // 找到所有旧level下的子部门list
-            List<SysDept> deptList = sysDeptMapper.getChildDeptListByLevel(before.getLevel()); // 假设 0.1.3.5
+            List<SysDept> deptList = sysDeptMapper.getChildDeptListByLevel(before.getLevel() + "." + before.getId()); // 假设 0.1.3.5
             // 遍历子部门，获取到他们的level
             if (CollectionUtils.isNotEmpty(deptList)) {
                 for (SysDept dept : deptList) {
