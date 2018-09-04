@@ -31,11 +31,12 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         //取得url和参数
-        String url = request.getRequestURL().toString();
-        Map parameterMap = request.getParameterMap();
-        long start = (Long) request.getAttribute(START_TIME);
-        long end = System.currentTimeMillis();
-        log.info("request finished. url:{}, params:{}, cost:{}", url, JsonMapper.obj2String(parameterMap), end - start);
+//        String url = request.getRequestURL().toString();
+//        Map parameterMap = request.getParameterMap();
+//        long start = (Long) request.getAttribute(START_TIME);
+//        long end = System.currentTimeMillis();
+//        log.info("request finished. url:{}, params:{}, cost:{}", url, JsonMapper.obj2String(parameterMap), end - start);
+        removeThreadLocalInfo();
     }
 
     @Override
@@ -46,5 +47,11 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         long start = (Long) request.getAttribute(START_TIME);
         long end = System.currentTimeMillis();
         log.info("request completion. url:{}, params:{}, cost:{}", url, JsonMapper.obj2String(parameterMap), end - start);
+
+        removeThreadLocalInfo();
+    }
+
+    private void removeThreadLocalInfo() {
+        RequestHolder.remove();
     }
 }

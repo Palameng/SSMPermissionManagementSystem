@@ -1,6 +1,7 @@
 package com.mengyuan.service;
 
 import com.google.common.base.Preconditions;
+import com.mengyuan.common.RequestHolder;
 import com.mengyuan.dao.SysDeptMapper;
 import com.mengyuan.exception.ParamException;
 import com.mengyuan.model.SysDept;
@@ -46,7 +47,7 @@ public class SysDeptService {
         dept.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()), param.getParentId()));
 
         // TODO 处理操作人相关信息
-        dept.setOperator("system");
+        dept.setOperator(RequestHolder.getCurrentUser().getUsername());
         dept.setOperateIp("127.0.0.1");
         dept.setOperateTime(new Date());
 
@@ -106,7 +107,7 @@ public class SysDeptService {
         after.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()), param.getParentId()));
 
         // TODO 处理操作人相关信息
-        after.setOperator("system-update");
+        after.setOperator(RequestHolder.getCurrentUser().getUsername());
         after.setOperateIp("127.0.0.1");
         after.setOperateTime(new Date());
 

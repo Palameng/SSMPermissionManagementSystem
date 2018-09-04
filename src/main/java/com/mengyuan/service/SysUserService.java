@@ -1,6 +1,9 @@
 package com.mengyuan.service;
 
 import com.google.common.base.Preconditions;
+import com.mengyuan.beans.PageQuery;
+import com.mengyuan.beans.PageResult;
+import com.mengyuan.common.RequestHolder;
 import com.mengyuan.dao.SysUserMapper;
 import com.mengyuan.exception.ParamException;
 import com.mengyuan.model.SysUser;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class SysUserService {
@@ -54,7 +58,7 @@ public class SysUserService {
                 .build();
 
         // TODO 处理操作人相关信息
-        sysUser.setOperator("system");
+        sysUser.setOperator(RequestHolder.getCurrentUser().getUsername());
         sysUser.setOperateIp("127.0.0.1");
         sysUser.setOperateTime(new Date());
 
@@ -89,13 +93,31 @@ public class SysUserService {
                 .remark(param.getRemark())
                 .build();
 
+        // TODO 处理操作人相关信息
+        after.setOperator(RequestHolder.getCurrentUser().getUsername());
+        after.setOperateIp("127.0.0.1");
+        after.setOperateTime(new Date());
+
         sysUserMapper.updateByPrimaryKeySelective(after);
+    }
+
+    public PageResult<SysUser> getPageByDeptId(int deptId, PageQuery pageQuery) {
+        // 校验前端传递过来的参数是否合法
+        BeanValidator.check(pageQuery);
+
+        int count = sysUserMapper.countByDeptId(deptId);
+
+        if (count > 0) {
+            List<SysUser> list = sysUserMapper.getPageByDeptId(deptId, pageQuery);
+            return PageResult.<SysUser>builder().total(count).data(list).build();
+        }
+
+        return PageResult.<SysUser>builder().build();
     }
 
     public SysUser findByKeyword(String keyword) {
         return sysUserMapper.findByKeyword(keyword);
     }
-
 
     private boolean checkEmailExist(String mail, Integer userId) {
         return sysUserMapper.countByMail(mail, userId) > 0;
