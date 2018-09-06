@@ -9,6 +9,7 @@ import com.mengyuan.exception.ParamException;
 import com.mengyuan.model.SysUser;
 import com.mengyuan.param.UserParam;
 import com.mengyuan.util.BeanValidator;
+import com.mengyuan.util.IpUtil;
 import com.mengyuan.util.MD5Util;
 import com.mengyuan.util.PasswordUtil;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class SysUserService {
 
         // TODO 处理操作人相关信息
         sysUser.setOperator(RequestHolder.getCurrentUser().getUsername());
-        sysUser.setOperateIp("127.0.0.1");
+        sysUser.setOperateIp(IpUtil.getRemoteIp((RequestHolder.getCurrentRequest())));
         sysUser.setOperateTime(new Date());
 
         // TODO 发送邮件
@@ -93,9 +94,9 @@ public class SysUserService {
                 .remark(param.getRemark())
                 .build();
 
-        // TODO 处理操作人相关信息
+        // 处理操作人相关信息
         after.setOperator(RequestHolder.getCurrentUser().getUsername());
-        after.setOperateIp("127.0.0.1");
+        after.setOperateIp(IpUtil.getRemoteIp((RequestHolder.getCurrentRequest())));
         after.setOperateTime(new Date());
 
         sysUserMapper.updateByPrimaryKeySelective(after);

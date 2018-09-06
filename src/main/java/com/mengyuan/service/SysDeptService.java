@@ -7,6 +7,7 @@ import com.mengyuan.exception.ParamException;
 import com.mengyuan.model.SysDept;
 import com.mengyuan.param.DeptParam;
 import com.mengyuan.util.BeanValidator;
+import com.mengyuan.util.IpUtil;
 import com.mengyuan.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -46,9 +47,9 @@ public class SysDeptService {
         // 处理层级信息
         dept.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()), param.getParentId()));
 
-        // TODO 处理操作人相关信息
+        // 处理操作人相关信息
         dept.setOperator(RequestHolder.getCurrentUser().getUsername());
-        dept.setOperateIp("127.0.0.1");
+        dept.setOperateIp(IpUtil.getRemoteIp((RequestHolder.getCurrentRequest())));
         dept.setOperateTime(new Date());
 
         sysDeptMapper.insertSelective(dept);
@@ -106,9 +107,9 @@ public class SysDeptService {
 
         after.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()), param.getParentId()));
 
-        // TODO 处理操作人相关信息
+        // 处理操作人相关信息
         after.setOperator(RequestHolder.getCurrentUser().getUsername());
-        after.setOperateIp("127.0.0.1");
+        after.setOperateIp(IpUtil.getRemoteIp((RequestHolder.getCurrentRequest())));
         after.setOperateTime(new Date());
 
         updateWithChild(before, after);
