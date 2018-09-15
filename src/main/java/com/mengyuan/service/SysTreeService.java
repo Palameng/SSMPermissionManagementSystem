@@ -3,8 +3,11 @@ package com.mengyuan.service;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.mengyuan.dao.SysAclModuleMapper;
 import com.mengyuan.dao.SysDeptMapper;
+import com.mengyuan.dto.AclModuleLevelDto;
 import com.mengyuan.dto.DeptLevelDto;
+import com.mengyuan.model.SysAclModule;
 import com.mengyuan.model.SysDept;
 import com.mengyuan.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,6 +23,13 @@ public class SysTreeService {
 
     @Resource
     private SysDeptMapper sysDeptMapper;
+
+    @Resource
+    private SysAclModuleMapper sysAclModuleMapper;
+
+    /********************************************************************************
+     *                               处理部门模块树部分
+     ********************************************************************************/
 
     public List<DeptLevelDto> deptTree() {
         // 获取所有的部门信息
@@ -38,6 +48,7 @@ public class SysTreeService {
     /**
      * 使用multimap处理list变为树结构
      * level -> [dept1, dept2, ...]
+     *
      * @param deptLevelList
      * @return
      */
@@ -106,6 +117,97 @@ public class SysTreeService {
         }
     };
 
+
+    /********************************************************************************
+     *                               处理权限模块树部分
+     ********************************************************************************/
+
+
+    /**
+     * 转换基本的实体类为dto类
+     * @return
+     */
+    public List<AclModuleLevelDto> aclModuleTree() {
+        List<SysAclModule> aclModuleList = sysAclModuleMapper.getAllAclModule();
+        List<AclModuleLevelDto> dtoList = Lists.newArrayList();
+
+        //获取的所有SysAclModule适配成带有子权限list的AclModuleLevelDto
+        for (SysAclModule aclModule : aclModuleList) {
+            dtoList.add(AclModuleLevelDto.adapt(aclModule));
+        }
+
+        return aclModuleListToTree(dtoList);
+    }
+
+
+    /**
+     * 数据准备，Multimap和rootlist
+     * @param dtoList
+     * @return
+     */
+    public List<AclModuleLevelDto> aclModuleListToTree(List<AclModuleLevelDto> dtoList) {
+        if (CollectionUtils.isEmpty(dtoList)) {
+            return Lists.newArrayList();
+        }
+
+        Multimap<String, AclModuleLevelDto> levelAclModuleMap = ArrayListMultimap.create();
+        List<AclModuleLevelDto> rootList = Lists.newArrayList();
+
+        for (AclModuleLevelDto dto : dtoList) {
+            levelAclModuleMap.put(dto.getLevel(), dto);
+
+            // 提取出第一层root层的部门列表
+            if (LevelUtil.ROOT.equals(dto.getLevel())) {
+                rootList.add(dto);
+            }
+        }
+
+        //seq从小到大排序
+        Collections.sort(rootList, aclModuleSeqComparator);
+
+        //递归生成树
+        transformAclModuleTree(rootList, LevelUtil.ROOT, levelAclModuleMap);
+
+        return rootList;
+
+    }
+
+
+    public void transformAclModuleTree(List<AclModuleLevelDto> aclModuleLevelList,
+                                  String level,
+                                  Multimap<String, AclModuleLevelDto> levelAclModuleMap) {
+        // 这里的aclModuleLevelList第一次进来时为 rootList，即顶层权限模块列表
+        for (int i = 0; i < aclModuleLevelList.size(); i++) {
+
+            // 遍历该层的每一个元素
+            AclModuleLevelDto aclModuleLevelDto = aclModuleLevelList.get(i);
+
+            // 得到当前层级每个部门对应的下一层level
+            String nextLevel = LevelUtil.calculateLevel(level, aclModuleLevelDto.getId());
+
+            //获取当前部门aclModuleLevelDto下的所有子部门list
+            List<AclModuleLevelDto> tempAclModuleList = (List<AclModuleLevelDto>) levelAclModuleMap.get(nextLevel);
+
+            //判断从map中读取的list是否为空，为空说明该部门已经是该分支下最后一个部门了,不为空则继续排序设置递归
+            if (CollectionUtils.isNotEmpty(tempAclModuleList)) {
+                // 排序
+                Collections.sort(tempAclModuleList, aclModuleSeqComparator);
+
+                // 设置下一层部门
+                aclModuleLevelDto.setAclModuleList(tempAclModuleList);
+
+                // 进入到下一层处理
+                transformAclModuleTree(tempAclModuleList, nextLevel, levelAclModuleMap);
+            }
+        }
+    }
+
+    public Comparator<AclModuleLevelDto> aclModuleSeqComparator = new Comparator<AclModuleLevelDto>() {
+        @Override
+        public int compare(AclModuleLevelDto o1, AclModuleLevelDto o2) {
+            return o1.getSeq() - o2.getSeq();
+        }
+    };
 
 
 }

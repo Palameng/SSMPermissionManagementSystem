@@ -10,12 +10,14 @@ import com.mengyuan.util.BeanValidator;
 import com.mengyuan.util.IpUtil;
 import com.mengyuan.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class SysAclModuleService {
 
     @Resource
