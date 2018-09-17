@@ -192,10 +192,14 @@
   </select>
 
     <select id="getPageByAclModuleId" parameterType="map" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List" />
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM sys_acl
         WHERE acl_module_id = #{aclModuleId}
         ORDER BY seq ASC, name ASC
         limit #{page.offset}, #{page.pageSize}
     </select>
+
+
+
 </mapper>

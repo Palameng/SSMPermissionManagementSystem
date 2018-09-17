@@ -7,6 +7,7 @@ import com.mengyuan.dao.SysAclModuleMapper;
 import com.mengyuan.dao.SysDeptMapper;
 import com.mengyuan.dto.AclModuleLevelDto;
 import com.mengyuan.dto.DeptLevelDto;
+import com.mengyuan.model.SysAcl;
 import com.mengyuan.model.SysAclModule;
 import com.mengyuan.model.SysDept;
 import com.mengyuan.util.LevelUtil;
@@ -26,6 +27,20 @@ public class SysTreeService {
 
     @Resource
     private SysAclModuleMapper sysAclModuleMapper;
+
+    @Resource
+    private SysCoreService sysCoreService;
+
+
+    public List<AclModuleLevelDto> roleTree(int roleId) {
+        // 1 当前用户已分配的权限点
+        List<SysAcl> userAclList = sysCoreService.getCurrentUserAclList();
+
+        // 2 当前角色分配的权限点
+        List<SysAcl> roleAclList = sysCoreService.getRoleAclList(roleId);
+
+        return null;
+    }
 
     /********************************************************************************
      *                               处理部门模块树部分

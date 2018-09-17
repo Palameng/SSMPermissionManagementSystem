@@ -5,6 +5,7 @@ import com.mengyuan.param.RoleParam;
 import com.mengyuan.service.SysRoleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,6 +43,12 @@ public class SysRoleController {
     @ResponseBody
     public JsonData list() {
         return JsonData.success(sysRoleService.getAll());
+    }
+
+    @RequestMapping("/roleTree.json")
+    @ResponseBody
+    public JsonData roleTree(@RequestParam("roleId") int roleId) {
+        return JsonData.success();
     }
 
 }

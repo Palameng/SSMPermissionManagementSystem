@@ -27,4 +27,8 @@ public interface SysAclMapper {
                                   @Param("name") String name,
                                   @Param("id") Integer id);
 
+    List<SysAcl> getAll();
+
+    List<SysAcl> getByIdList(@Param("idList") List<Integer> idList);
+
 }
