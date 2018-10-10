@@ -17,6 +17,8 @@ import java.util.List;
 @ToString
 public class DeptLevelDto extends SysDept {
 
+
+
     //继承sysDept,并增加一个list存储子部门列表
     private List<DeptLevelDto> deptList = Lists.newArrayList();
 
@@ -30,5 +32,9 @@ public class DeptLevelDto extends SysDept {
         //拷贝属性
         BeanUtils.copyProperties(dept, dto);
         return dto;
+    }
+
+    public void setDeptList(List<DeptLevelDto> deptList) {
+        this.deptList = deptList;
     }
 }

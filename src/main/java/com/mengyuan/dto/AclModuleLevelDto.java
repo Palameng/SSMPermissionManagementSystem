@@ -18,6 +18,14 @@ public class AclModuleLevelDto extends SysAclModule {
 
     private List<AclDto> aclList = Lists.newArrayList();
 
+    public void setAclModuleList(List<AclModuleLevelDto> aclModuleList) {
+        this.aclModuleList = aclModuleList;
+    }
+
+    public void setAclList(List<AclDto> aclList) {
+        this.aclList = aclList;
+    }
+
     public static AclModuleLevelDto adapt(SysAclModule aclModule) {
         AclModuleLevelDto dto = new AclModuleLevelDto();
         BeanUtils.copyProperties(aclModule, dto);
